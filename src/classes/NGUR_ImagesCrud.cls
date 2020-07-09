@@ -1,4 +1,11 @@
-global class NGUR_ImagesCrud {
+public with sharing class NGUR_ImagesCrud {
+
+    public void integrateImages() {
+        List<NGUR_ImagesWrapper> imagesFromApi = NGUR_ImagesCrud_Helper.fetchImagesFromApi();
+        insertNewImagesFromApi(imagesFromApi);
+        updateImagesFromApi(imagesFromApi);
+        deleteDeletedImagesFromApi(imagesFromApi);
+    }
 
     public void insertNewImagesFromApi(List<NGUR_ImagesWrapper> imagesFromApi) {
         Set<String> imagesFromApiIds = new Set<String>();
