@@ -8,6 +8,7 @@
     },
 
     searchImages: function (component, event) {
+        let helpSelf = this;
         let title = component.get("v.title");
         let action = component.get("c.searchImagesByTitle");
 
@@ -20,11 +21,28 @@
             if (state === "SUCCESS") {
                 let data = response.getReturnValue();
 
-                component.set("v.searchedImages", data);
+                if ($A.util.isEmpty(data)) {
+                    helpSelf.showToast("info", "Info","No images found");
+                } else {
+                    component.set("v.searchedImages", data);
+                }
+            } else if (state === "ERROR") {
+                let errors = response.getError();
+                helpSelf.showToast("error", "Error", errors[0].message);
             } else {
-                console.log('error');
+                helpSelf.showToast("error", "Error","Unknown error");
             }
         });
         $A.enqueueAction(action);
+    },
+
+    showToast : function(type, title, message) {
+        let toastEvent = $A.get("e.force:showToast");
+        toastEvent.setParams({
+            "type": type,
+            "title": title,
+            "message": message
+        });
+        toastEvent.fire();
     }
 });
