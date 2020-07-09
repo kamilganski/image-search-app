@@ -3,27 +3,57 @@
     <aura:attribute name="title" type="String"/>
     <aura:attribute name="columns" type="List"/>
     <aura:attribute name="searchedImages" type="Object"/>
+    <aura:attribute name="emailAddress" type="String"/>
+    <aura:attribute name="showEmailModal" type="Boolean" default="false"/>
 
     <aura:handler name="init" value="{!this}" action="{!c.onInit}"/>
 
     <lightning:card>
+        <aura:set attribute="actions">
+            <lightning:button class="slds-m-left_small" label="Send found images to Email" variant="brand"
+                              disabled="{!empty(v.searchedImages)}" onclick="{!c.showEmailModal}"/>
+        </aura:set>
         <div class="slds-align_absolute-center">
             <lightning:input label="Title" value="{!v.title}"/>
         </div>
 
         <div class="slds-align_absolute-center slds-p-around_x-small">
             <lightning:button label="Search" variant="brand" onclick="{!c.onSearchImages}"/>
+            <lightning:button label="Clear" disabled="{!empty(v.searchedImages)}" onclick="{!c.onSearchClear}"/>
         </div>
 
-        <div class="slds-align_absolute-center slds-m-around_large" style="max-width: 95%;">
-            <lightning:datatable
-                    keyField="id"
-                    data="{!v.searchedImages}"
-                    columns="{!v.columns}"
-                    hideCheckboxColumn="true"
-                    resizeColumnDisabled="true"
-            />
-        </div>
+        <aura:if isTrue="{!not(empty(v.searchedImages))}">
+            <div class="slds-align_absolute-center slds-m-around_large" style="max-width: 95%;">
+                <lightning:datatable
+                        keyField="id"
+                        data="{!v.searchedImages}"
+                        columns="{!v.columns}"
+                        hideCheckboxColumn="true"
+                        resizeColumnDisabled="true"
+                />
+            </div>
+        </aura:if>
     </lightning:card>
+
+    <aura:if isTrue="{!v.showEmailModal}">
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1">
+            <div class="slds-modal__container" style="max-width: 30%;">
+                <header class="slds-modal__header">
+                    <h3 id="modal-heading-01" class="slds-modal__title slds-hyphenate">Send email with found images</h3>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <div class="slds-align_absolute-center">
+                        <lightning:input class="slds-size--2-of-3" label="Email Address" value="{!v.emailAddress}"/>
+                    </div>
+
+                    <div class="slds-align_absolute-center slds-m-around_small">
+                        <lightning:button label="Send" variant="brand" onclick="{!c.onSendEmail}"/>
+                        <lightning:button label="Cancel" onclick="{!c.hideEmailModal}"/>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </aura:if>
 
 </aura:component>

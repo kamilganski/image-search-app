@@ -36,6 +36,39 @@
         $A.enqueueAction(action);
     },
 
+    sendEmail: function (component, event) {
+        let helpSelf = this;
+        let emailAddress = component.get("v.emailAddress");
+        let foundImages = component.get("v.searchedImages");
+        let action = component.get("c.sendEmailToSpecificEmailAddress");
+
+        action.setParams({
+            emailAddress: emailAddress,
+            foundImages: foundImages
+        });
+        action.setCallback(this, function (response) {
+            let state = response.getState();
+
+            if (state === "SUCCESS") {
+                let result = response.getReturnValue();
+
+                if (result) {
+                    helpSelf.showToast("success", "Success","Email send");
+                    component.set("v.emailAddress", "");
+                    component.set("v.showEmailModal", false);
+                } else {
+                    helpSelf.showToast("error", "Error","Email not send");
+                }
+            } else if (state === "ERROR") {
+                let errors = response.getError();
+                helpSelf.showToast("error", "Error", errors[0].message);
+            } else {
+                helpSelf.showToast("error", "Error","Unknown error");
+            }
+        });
+        $A.enqueueAction(action);
+    },
+
     showToast : function(type, title, message) {
         let toastEvent = $A.get("e.force:showToast");
         toastEvent.setParams({
