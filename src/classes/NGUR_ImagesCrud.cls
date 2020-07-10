@@ -1,13 +1,14 @@
 public with sharing class NGUR_ImagesCrud {
 
-    public void integrateImages() {
+    @Future (Callout = true)
+    public static void integrateImages() {
         List<NGUR_ImagesWrapper> imagesFromApi = NGUR_ImagesCrud_Helper.fetchImagesFromApi();
         insertNewImagesFromApi(imagesFromApi);
         updateImagesFromApi(imagesFromApi);
         deleteDeletedImagesFromApi(imagesFromApi);
     }
 
-    public void insertNewImagesFromApi(List<NGUR_ImagesWrapper> imagesFromApi) {
+    public static void insertNewImagesFromApi(List<NGUR_ImagesWrapper> imagesFromApi) {
         Set<String> imagesFromApiIds = new Set<String>();
 
         for (NGUR_ImagesWrapper imageFromApi : imagesFromApi) {
@@ -38,7 +39,7 @@ public with sharing class NGUR_ImagesCrud {
         }
     }
 
-    public void updateImagesFromApi(List<NGUR_ImagesWrapper> imagesFromApi) {
+    public static void updateImagesFromApi(List<NGUR_ImagesWrapper> imagesFromApi) {
         Set<String> imagesFromApiIds = new Set<String>();
 
         for (NGUR_ImagesWrapper imageFromApi : imagesFromApi) {
@@ -71,7 +72,7 @@ public with sharing class NGUR_ImagesCrud {
         }
     }
 
-    public void deleteDeletedImagesFromApi(List<NGUR_ImagesWrapper> imagesFromApi) {
+    public static void deleteDeletedImagesFromApi(List<NGUR_ImagesWrapper> imagesFromApi) {
         Set<String> imagesFromApiIds = new Set<String>();
 
         for (NGUR_ImagesWrapper imageFromApi : imagesFromApi) {
